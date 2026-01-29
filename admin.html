@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>叙事之镜 - 后台管理</title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <style>
+        .admin-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .admin-title {
+            font-size: 2rem;
+            font-weight: 300;
+            color: rgba(220, 200, 170, 0.9);
+            letter-spacing: 0.2em;
+            margin-bottom: 12px;
+        }
+        
+        .admin-subtitle {
+            font-size: 0.95rem;
+            color: rgba(180, 160, 140, 0.7);
+        }
+        
+        .stats-bar {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            background: rgba(30, 25, 20, 0.5);
+            border: 1px solid rgba(180, 140, 100, 0.2);
+            border-radius: 4px;
+            padding: 16px 24px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            color: rgba(200, 170, 130, 0.95);
+            font-weight: 300;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(180, 160, 140, 0.6);
+            margin-top: 6px;
+            letter-spacing: 0.1em;
+        }
+        
+        .narratives-list {
+            margin-top: 30px;
+        }
+        
+        .narrative-card {
+            background: rgba(30, 25, 20, 0.6);
+            border: 1px solid rgba(180, 140, 100, 0.2);
+            border-radius: 6px;
+            padding: 28px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .narrative-card:hover {
+            border-color: rgba(180, 140, 100, 0.4);
+        }
+        
+        .narrative-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .narrative-title {
+            font-size: 1.3rem;
+            color: rgba(220, 200, 170, 0.95);
+            font-weight: 400;
+        }
+        
+        .narrative-meta {
+            font-size: 0.8rem;
+            color: rgba(180, 160, 140, 0.5);
+            text-align: right;
+        }
+        
+        .narrative-meta span {
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .narrative-section {
+            margin-bottom: 20px;
+        }
+        
+        .section-label {
+            font-size: 0.75rem;
+            color: rgba(180, 140, 100, 0.7);
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .section-content {
+            font-size: 1rem;
+            line-height: 1.9;
+            color: rgba(230, 220, 200, 0.85);
+            background: rgba(20, 18, 15, 0.4);
+            padding: 16px 20px;
+            border-radius: 4px;
+            border-left: 2px solid rgba(180, 140, 100, 0.3);
+            white-space: pre-wrap;
+        }
+        
+        .narrative-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(180, 140, 100, 0.15);
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            background: rgba(180, 140, 100, 0.1);
+            border: 1px solid rgba(180, 140, 100, 0.3);
+            color: rgba(200, 180, 150, 0.8);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: rgba(180, 140, 100, 0.2);
+            border-color: rgba(180, 140, 100, 0.5);
+        }
+        
+        .action-btn.danger {
+            border-color: rgba(180, 100, 100, 0.3);
+            color: rgba(200, 150, 150, 0.8);
+        }
+        
+        .action-btn.danger:hover {
+            background: rgba(180, 100, 100, 0.15);
+            border-color: rgba(200, 100, 100, 0.5);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(180, 160, 140, 0.5);
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+        
+        .empty-text {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .empty-hint {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .clear-all-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            color: rgba(180, 140, 140, 0.6);
+            border: 1px dashed rgba(180, 100, 100, 0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: none;
+        }
+        
+        .clear-all-btn:hover {
+            color: rgba(200, 150, 150, 0.8);
+            border-color: rgba(180, 100, 100, 0.4);
+        }
+        
+        .export-btn {
+            padding: 10px 20px;
+            background: rgba(100, 140, 100, 0.15);
+            border: 1px solid rgba(140, 180, 140, 0.3);
+            color: rgba(180, 220, 180, 0.8);
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .export-btn:hover {
+            background: rgba(100, 140, 100, 0.25);
+            border-color: rgba(140, 180, 140, 0.5);
+        }
+        
+        .toolbar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="dust" id="dust"></div>
+
+    <div class="container" style="max-width: 900px;">
+        <div class="back-link" id="backToIndex">← 返回目录</div>
+        
+        <header class="admin-header">
+            <h1 class="admin-title">后台管理</h1>
+            <p class="admin-subtitle">查看用户提交的叙事作品</p>
+        </header>
+
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-item">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">总叙事数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="todayCount">0</div>
+                <div class="stat-label">今日提交</div>
+            </div>
+        </div>
+        
+        <div class="toolbar">
+            <button class="export-btn" id="exportBtn">导出全部数据 (JSON)</button>
+            <button class="clear-all-btn" id="clearAllBtn">清空所有数据</button>
+        </div>
+
+        <div class="narratives-list" id="narrativesList">
+            <!-- 动态生成 -->
+        </div>
+    </div>
+
+    <script>
+        // 返回目录
+        document.getElementById('backToIndex').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        // 创建尘埃粒子
+        function createDust() {
+            const container = document.getElementById('dust');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dust-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                container.appendChild(particle);
+            }
+        }
+        createDust();
+
+        // 加载并显示叙事
+        function loadNarratives() {
+            const narratives = JSON.parse(localStorage.getItem('userNarratives') || '[]');
+            const container = document.getElementById('narrativesList');
+            
+            // 更新统计
+            document.getElementById('totalCount').textContent = narratives.length;
+            
+            // 计算今日提交数
+            const today = new Date().toDateString();
+            const todayCount = narratives.filter(n => new Date(n.timestamp).toDateString() === today).length;
+            document.getElementById('todayCount').textContent = todayCount;
+            
+            if (narratives.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📝</div>
+                        <div class="empty-text">暂无叙事提交</div>
+                        <div class="empty-hint">用户提交的叙事将在这里显示</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 按时间倒序排列
+            narratives.sort((a, b) => b.id - a.id);
+            
+            container.innerHTML = narratives.map(n => `
+                <div class="narrative-card" data-id="${n.id}">
+                    <div class="narrative-header">
+                        <div class="narrative-title">${escapeHtml(n.title)}</div>
+                        <div class="narrative-meta">
+                            <span>作者: ${escapeHtml(n.author)}</span>
+                            <span>${formatTime(n.timestamp)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="narrative-section">
+                        <div class="section-label">场景描述</div>
+                        <div class="section-content">${escapeHtml(n.sceneDesc)}</div>
+                    </div>
+                    
+                    <div class="narrative-section">
+                        <div class="section-label">叙事内容 (第一人称)</div>
+                        <div class="section-content">${escapeHtml(n.content)}</div>
+                    </div>
+                    
+                    ${n.reflection ? `
+                        <div class="narrative-section">
+                            <div class="section-label">作者思考</div>
+                            <div class="section-content">${escapeHtml(n.reflection)}</div>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="narrative-actions">
+                        <button class="action-btn" onclick="copyNarrative(${n.id})">复制内容</button>
+                        <button class="action-btn danger" onclick="deleteNarrative(${n.id})">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // HTML 转义
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+        
+        // 时间格式化
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // 删除叙事
+        function deleteNarrative(id) {
+            if (!confirm('确定要删除这篇叙事吗？此操作不可撤销。')) return;
+            
+            let narratives = JSON.parse(localStorage.getItem('userNarratives') || '[]');
+            narratives = narratives.filter(n => n.id !== id);
+            localStorage.setItem('userNarratives', JSON.stringify(narratives));
+            loadNarratives();
+        }
+        
+        // 复制叙事
+        function copyNarrative(id) {
+            const narratives = JSON.parse(localStorage.getItem('userNarratives') || '[]');
+            const n = narratives.find(item => item.id === id);
+            if (!n) return;
+            
+            const text = `【${n.title}】
+作者: ${n.author}
+时间: ${formatTime(n.timestamp)}
+
+=== 场景描述 ===
+${n.sceneDesc}
+
+=== 叙事内容 ===
+${n.content}
+
+${n.reflection ? `=== 作者思考 ===\n${n.reflection}` : ''}`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已复制到剪贴板！');
+            }).catch(() => {
+                alert('复制失败，请手动复制');
+            });
+        }
+        
+        // 导出数据
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            const narratives = JSON.parse(localStorage.getItem('userNarratives') || '[]');
+            if (narratives.length === 0) {
+                alert('暂无数据可导出');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(narratives, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `narratives_${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+        });
+        
+        // 清空所有数据
+        document.getElementById('clearAllBtn').addEventListener('click', () => {
+            if (!confirm('确定要清空所有叙事数据吗？此操作不可撤销！')) return;
+            if (!confirm('再次确认：真的要删除全部数据吗？')) return;
+            
+            localStorage.removeItem('userNarratives');
+            loadNarratives();
+        });
+        
+        // 初始化
+        loadNarratives();
+    </script>
+</body>
+</html>

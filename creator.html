@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>叙事之镜 - 创作者入口</title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <style>
+        .narrative-form {
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            color: rgba(200, 180, 150, 0.9);
+            margin-bottom: 10px;
+            letter-spacing: 0.05em;
+        }
+        
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(20, 18, 15, 0.7);
+            border: 1px solid rgba(180, 140, 100, 0.25);
+            border-radius: 4px;
+            color: rgba(240, 230, 210, 0.9);
+            font-family: inherit;
+            font-size: 1rem;
+            line-height: 1.7;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: rgba(180, 140, 100, 0.5);
+            box-shadow: 0 0 20px rgba(180, 140, 100, 0.1);
+        }
+        
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(180, 160, 140, 0.4);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+        
+        .form-textarea.large {
+            min-height: 250px;
+        }
+        
+        .form-hint {
+            font-size: 0.8rem;
+            color: rgba(180, 160, 140, 0.5);
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .submit-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .submit-btn {
+            padding: 14px 32px;
+            background: rgba(180, 140, 100, 0.2);
+            border: 1px solid rgba(180, 140, 100, 0.5);
+            color: rgba(220, 200, 170, 0.95);
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            letter-spacing: 0.1em;
+        }
+        
+        .submit-btn:hover {
+            background: rgba(180, 140, 100, 0.35);
+            border-color: rgba(180, 140, 100, 0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(180, 140, 100, 0.15);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .submit-btn.secondary {
+            background: transparent;
+            border-color: rgba(180, 140, 100, 0.3);
+            color: rgba(180, 160, 140, 0.7);
+        }
+        
+        .success-message {
+            display: none;
+            padding: 20px 28px;
+            background: rgba(100, 140, 100, 0.15);
+            border: 1px solid rgba(140, 180, 140, 0.3);
+            border-radius: 4px;
+            color: rgba(180, 220, 180, 0.9);
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .admin-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            color: rgba(180, 160, 140, 0.5);
+            border: 1px dashed rgba(180, 140, 100, 0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-link:hover {
+            color: rgba(200, 180, 150, 0.8);
+            border-color: rgba(180, 140, 100, 0.4);
+        }
+        
+        .divider-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(180, 140, 100, 0.3), transparent);
+            margin: 40px 0;
+        }
+        
+        .guide-toggle {
+            font-size: 0.9rem;
+            color: rgba(180, 140, 100, 0.7);
+            cursor: pointer;
+            transition: color 0.3s ease;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+        
+        .guide-toggle:hover {
+            color: rgba(200, 170, 130, 0.9);
+        }
+        
+        .guide-content {
+            display: none;
+            margin-top: 16px;
+        }
+        
+        .guide-content.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="dust" id="dust"></div>
+
+    <div class="container creator-container">
+        <div class="back-link" id="backToIndex">← 返回目录</div>
+        
+        <header class="creator-header">
+            <h1 class="creator-page-title">创作者入口</h1>
+            <p class="creator-page-subtitle">用你的真实观察，创造新的叙事世界</p>
+        </header>
+
+        <!-- 创作指南（可折叠） -->
+        <section class="creator-block">
+            <div class="guide-toggle" id="guideToggle">◇ 查看创作指南 ▾</div>
+            <div class="guide-content" id="guideContent">
+                <div class="block-content">
+                    <p>「叙事之镜」的每一个场景，都源自真实的观察与体验。</p>
+                    <p>当你走在街上，看见一个陌生人，心中升起疑问：<em>「他到底觉得自己是谁？他相信什么？他的叙事是什么？」</em>——这就是一个叙事的起点。</p>
+                    
+                    <h3>写作提示</h3>
+                    <p><strong>场景：</strong>一个具体的地点和时刻，有氛围，能让人身临其境。</p>
+                    <p><strong>观察：</strong>你看见了什么人？他们在做什么？先如实描述。</p>
+                    <p><strong>叙事：</strong>进入这个人的视角，用第一人称。记住：没有人认为自己是配角。</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider-line"></div>
+
+        <!-- 叙事输入表单 -->
+        <section class="creator-block">
+            <h2 class="block-title">◇ 写下你的叙事</h2>
+            
+            <form class="narrative-form" id="narrativeForm">
+                <div class="form-group">
+                    <label class="form-label">你的笔名</label>
+                    <input type="text" class="form-input" id="authorName" placeholder="可以是真名，也可以是化名..." maxlength="50">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">场景标题</label>
+                    <input type="text" class="form-input" id="sceneTitle" placeholder="比如：深夜便利店、雨天的地铁站..." maxlength="100" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">场景描述</label>
+                    <textarea class="form-textarea" id="sceneDesc" placeholder="描述这个场景的氛围、你看见的人和细节..." required></textarea>
+                    <div class="form-hint">用具体的细节让读者身临其境</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">角色的叙事（第一人称）</label>
+                    <textarea class="form-textarea large" id="narrativeContent" placeholder="如果你进入这个人的视角，用「我」来写——他会如何讲述自己的故事？他相信什么？他在追寻什么？他害怕什么？..." required></textarea>
+                    <div class="form-hint">最重要的部分：用第一人称展现这个人的内心世界</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">你的思考（可选）</label>
+                    <textarea class="form-textarea" id="reflection" placeholder="关于这个叙事，你有什么思考？它让你想到了什么？..."></textarea>
+                </div>
+                
+                <div class="submit-row">
+                    <button type="submit" class="submit-btn" id="submitBtn">保存叙事</button>
+                    <button type="button" class="submit-btn secondary" id="clearBtn">清空表单</button>
+                </div>
+            </form>
+            
+            <div class="success-message" id="successMessage">
+                ✦ 你的叙事已保存成功！感谢你的分享。
+            </div>
+        </section>
+
+        <!-- 底部 -->
+        <footer class="creator-footer">
+            <p>期待你的故事 ✦</p>
+            <div class="admin-link" id="adminLink">管理入口 →</div>
+        </footer>
+    </div>
+
+    <script>
+        // 返回目录
+        document.getElementById('backToIndex').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        // 创建尘埃粒子
+        function createDust() {
+            const container = document.getElementById('dust');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dust-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                container.appendChild(particle);
+            }
+        }
+        createDust();
+
+        // 指南折叠
+        const guideToggle = document.getElementById('guideToggle');
+        const guideContent = document.getElementById('guideContent');
+        let guideOpen = false;
+        
+        guideToggle.addEventListener('click', () => {
+            guideOpen = !guideOpen;
+            guideContent.classList.toggle('show', guideOpen);
+            guideToggle.textContent = guideOpen ? '◇ 收起创作指南 ▴' : '◇ 查看创作指南 ▾';
+        });
+
+        // 表单提交
+        const form = document.getElementById('narrativeForm');
+        const successMessage = document.getElementById('successMessage');
+        
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const narrative = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                author: document.getElementById('authorName').value.trim() || '匿名',
+                title: document.getElementById('sceneTitle').value.trim(),
+                sceneDesc: document.getElementById('sceneDesc').value.trim(),
+                content: document.getElementById('narrativeContent').value.trim(),
+                reflection: document.getElementById('reflection').value.trim()
+            };
+            
+            // 从 localStorage 获取现有叙事
+            let narratives = JSON.parse(localStorage.getItem('userNarratives') || '[]');
+            narratives.push(narrative);
+            localStorage.setItem('userNarratives', JSON.stringify(narratives));
+            
+            // 显示成功消息
+            successMessage.classList.add('show');
+            
+            // 清空表单
+            form.reset();
+            
+            // 3秒后隐藏成功消息
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 3000);
+        });
+
+        // 清空表单
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            if (confirm('确定要清空表单内容吗？')) {
+                form.reset();
+            }
+        });
+
+        // 管理入口
+        document.getElementById('adminLink').addEventListener('click', () => {
+            window.location.href = 'admin.html';
+        });
+    </script>
+</body>
+</html>

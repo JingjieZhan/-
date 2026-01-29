@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>叙事之镜 - 每个人都活在自己的故事里</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #000;
+            color: rgba(255,255,255,0.8);
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* 深色神秘背景 */
+        .bg-container {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 0%, rgba(60, 20, 100, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(20, 60, 100, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(10, 10, 30, 0.9) 0%, #000 100%);
+            z-index: 0;
+        }
+
+        /* 流动光晕层 */
+        .glow-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: floatOrb 12s ease-in-out infinite;
+        }
+
+        .glow-orb:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: rgba(100, 50, 200, 0.5);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .glow-orb:nth-child(2) {
+            width: 350px;
+            height: 350px;
+            background: rgba(0, 150, 200, 0.4);
+            bottom: -80px;
+            right: -80px;
+            animation-delay: -4s;
+        }
+
+        .glow-orb:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            background: rgba(200, 50, 100, 0.3);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -8s;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            25% { transform: translate(30px, -20px) scale(1.1); opacity: 0.5; }
+            50% { transform: translate(-20px, 30px) scale(0.95); opacity: 0.4; }
+            75% { transform: translate(20px, 20px) scale(1.05); opacity: 0.35; }
+        }
+
+        /* 粒子容器 */
+        .particles-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        @keyframes rise {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1);
+            }
+        }
+
+        /* 主容器 */
+        .container {
+            position: relative;
+            width: 100vw;
+            min-height: 100vh;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        /* 中心脉冲文字 */
+        .center-text {
+            font-size: 72px;
+            font-weight: 200;
+            letter-spacing: 16px;
+            color: #fff;
+            text-shadow: 
+                0 0 30px rgba(0, 255, 255, 0.8),
+                0 0 60px rgba(100, 50, 200, 0.6),
+                0 0 100px rgba(200, 50, 100, 0.4);
+            animation: textPulse 8s ease-in-out infinite;
+            z-index: 5;
+            pointer-events: none;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 0.3em;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        @keyframes textPulse {
+            0%, 100% { opacity: 0.8; transform: scale(0.98); }
+            50% { 
+                opacity: 1; 
+                transform: scale(1);
+                text-shadow: 
+                    0 0 50px rgba(0, 255, 255, 1),
+                    0 0 100px rgba(100, 50, 200, 0.8),
+                    0 0 150px rgba(200, 50, 100, 0.6);
+            }
+        }
+
+        /* 叙事框网格 - 两列三行 */
+        .narrative-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            max-width: 800px;
+            width: 100%;
+            margin-bottom: 50px;
+        }
+
+        .narrative-card {
+            background: rgba(20, 20, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+            border: 1px solid rgba(100, 100, 150, 0.2);
+            animation: cardFloat 4s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .narrative-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.05) 50%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .narrative-card:nth-child(1) { animation-delay: 0s; }
+        .narrative-card:nth-child(2) { animation-delay: 0.3s; }
+        .narrative-card:nth-child(3) { animation-delay: 0.6s; }
+        .narrative-card:nth-child(4) { animation-delay: 0.9s; }
+        .narrative-card:nth-child(5) { animation-delay: 1.2s; }
+        .narrative-card:nth-child(6) { animation-delay: 1.5s; }
+
+        .narrative-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: rgba(0, 255, 255, 0.6);
+            box-shadow: 
+                0 0 40px rgba(0, 255, 255, 0.3),
+                0 0 80px rgba(100, 50, 200, 0.2),
+                0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .narrative-card:hover::before {
+            opacity: 1;
+        }
+
+        .narrative-card.coming-soon {
+            opacity: 0.4;
+            cursor: default;
+        }
+
+        .narrative-card.coming-soon:hover {
+            transform: translateY(-4px);
+            border-color: rgba(100, 100, 150, 0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .narrative-card:not(.coming-soon) .card-title {
+            color: rgba(0, 255, 255, 1);
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+        }
+
+        .narrative-card:not(.coming-soon) .card-location {
+            color: rgba(255, 200, 100, 0.9);
+        }
+
+        .narrative-card:not(.coming-soon) .card-desc {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .card-location {
+            font-size: 0.85rem;
+            color: rgba(0, 255, 255, 0.7);
+            margin-bottom: 12px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.6;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            background: rgba(100, 50, 200, 0.3);
+            border: 1px solid rgba(100, 50, 200, 0.5);
+            border-radius: 20px;
+            color: rgba(200, 150, 255, 0.9);
+        }
+
+        /* 创作者入口 */
+        .creator-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(20, 20, 40, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px dashed rgba(100, 100, 150, 0.4);
+            border-radius: 12px;
+            padding: 20px 28px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .creator-card:hover {
+            border-color: rgba(0, 255, 255, 0.6);
+            border-style: solid;
+            background: rgba(30, 30, 60, 0.5);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .creator-icon {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(0, 255, 255, 0.7);
+        }
+
+        .creator-icon svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .creator-info {
+            flex: 1;
+        }
+
+        .creator-title {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 4px;
+        }
+
+        .creator-desc {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .creator-arrow {
+            font-size: 1.4rem;
+            color: rgba(0, 255, 255, 0.5);
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .creator-card:hover .creator-arrow {
+            transform: translateX(6px);
+            color: rgba(0, 255, 255, 0.9);
+        }
+
+        /* 底部 */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.8rem;
+        }
+
+        .footer-line {
+            width: 50px;
+            height: 1px;
+            background: rgba(100, 100, 150, 0.3);
+            margin: 0 auto 18px;
+        }
+
+        .footer-note {
+            margin-top: 6px;
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .center-text {
+                font-size: 42px;
+                letter-spacing: 8px;
+            }
+            .narrative-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 深色神秘背景 -->
+    <div class="bg-container"></div>
+    
+    <!-- 流动光晕层 -->
+    <div class="glow-layer">
+        <div class="glow-orb"></div>
+        <div class="glow-orb"></div>
+        <div class="glow-orb"></div>
+    </div>
+    
+    <!-- 上升粒子 -->
+    <div class="particles-container" id="particles"></div>
+
+    <div class="container">
+        <!-- 中心脉冲文字 -->
+        <h1 class="center-text">叙事之镜</h1>
+        <p class="subtitle">每个人都活在自己的故事里</p>
+
+        <!-- 叙事框网格 - 两列三行 -->
+        <div class="narrative-grid" id="narrativeGrid">
+            <!-- 由 JS 动态生成 -->
+        </div>
+
+        <!-- 创作者入口 -->
+        <div class="creator-card" id="creatorEntry">
+            <div class="creator-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
+            </div>
+            <div class="creator-info">
+                <div class="creator-title">创作者入口</div>
+                <div class="creator-desc">用你的真实观察，创造新的叙事世界</div>
+            </div>
+            <div class="creator-arrow">→</div>
+        </div>
+
+        <!-- 底部 -->
+        <footer class="footer">
+            <div class="footer-line"></div>
+            <p>叙事之镜 · 2026</p>
+            <p class="footer-note">一个关于「看见」的实验</p>
+        </footer>
+    </div>
+
+    <script src="scripts/scenes.js"></script>
+    <script>
+        // 创建上升粒子
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const colors = ['#00ffff', '#ff00ff', '#ffaa00', '#00ff88', '#8888ff'];
+            
+            for (let i = 0; i < 120; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const x = Math.random() * 100;
+                const size = 1 + Math.random() * 3;
+                const duration = 8 + Math.random() * 12;
+                const delay = Math.random() * -20;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                particle.style.cssText = `
+                    left: ${x}%;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background: ${color};
+                    box-shadow: 0 0 ${size * 4}px ${color};
+                    animation: rise ${duration}s linear ${delay}s infinite;
+                `;
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // 卡牌渐变背景配色
+        function getColorScheme(id) {
+            const schemes = {
+                'dali': { start: 'rgba(255,180,100,0.3)', end: 'rgba(200,100,50,0.15)' },
+                'convenience-store': { start: 'rgba(0,200,255,0.3)', end: 'rgba(0,100,150,0.15)' },
+                'subway': { start: 'rgba(100,100,150,0.3)', end: 'rgba(50,50,80,0.15)' },
+                'hospital': { start: 'rgba(200,220,255,0.3)', end: 'rgba(100,150,200,0.15)' },
+                'park': { start: 'rgba(100,200,100,0.3)', end: 'rgba(50,150,50,0.15)' },
+                'cafe': { start: 'rgba(180,120,80,0.3)', end: 'rgba(100,60,40,0.15)' }
+            };
+            return schemes[id] || { start: 'rgba(100,100,150,0.3)', end: 'rgba(50,50,80,0.15)' };
+        }
+
+        // 渲染叙事卡片
+        function renderNarratives() {
+            const grid = document.getElementById('narrativeGrid');
+            
+            // 从 SceneRegistry 读取场景数据
+            let scenesToShow = [];
+            if (window.SceneRegistry) {
+                scenesToShow = Object.values(window.SceneRegistry).slice(0, 6);
+            }
+            
+            // 如果不足6个，补充占位
+            while (scenesToShow.length < 6) {
+                scenesToShow.push({
+                    id: 'coming-' + scenesToShow.length,
+                    title: '敬请期待',
+                    location: '未知之地',
+                    description: '新的叙事正在酝酿中...',
+                    available: false
+                });
+            }
+
+            scenesToShow.forEach((scene, index) => {
+                const card = document.createElement('div');
+                card.className = 'narrative-card' + (scene.available === false ? ' coming-soon' : '');
+                
+                const colors = getColorScheme(scene.id);
+                card.style.background = `linear-gradient(135deg, ${colors.start}, ${colors.end}), rgba(20, 20, 40, 0.6)`;
+                
+                card.innerHTML = `
+                    ${scene.available === false ? '<span class="card-badge">敬请期待</span>' : ''}
+                    <div class="card-title">${scene.title}</div>
+                    <div class="card-location">${scene.location}</div>
+                    <div class="card-desc">${scene.description}</div>
+                `;
+                
+                if (scene.available !== false) {
+                    card.addEventListener('click', () => {
+                        window.location.href = `scene.html?id=${scene.id}`;
+                    });
+                }
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // 创作者入口点击
+        document.getElementById('creatorEntry').addEventListener('click', () => {
+            window.location.href = 'creator.html';
+        });
+
+        // 初始化
+        createParticles();
+        renderNarratives();
+    </script>
+</body>
+</html>

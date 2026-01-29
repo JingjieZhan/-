@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>叙事之镜 - 观察者之镜</title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <style>
+        .observer-container {
+            max-width: 750px;
+        }
+        
+        .observer-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .observer-title {
+            font-size: 2.2rem;
+            font-weight: 200;
+            color: rgba(200, 190, 170, 0.95);
+            letter-spacing: 0.25em;
+            margin-bottom: 16px;
+            text-shadow: 0 0 40px rgba(150, 180, 200, 0.2);
+        }
+        
+        .observer-subtitle {
+            font-size: 1rem;
+            color: rgba(150, 170, 190, 0.7);
+            letter-spacing: 0.1em;
+            font-style: italic;
+        }
+        
+        .observer-intro {
+            background: rgba(25, 28, 32, 0.6);
+            border: 1px solid rgba(100, 140, 180, 0.2);
+            border-left: 3px solid rgba(100, 140, 180, 0.4);
+            border-radius: 4px;
+            padding: 28px 32px;
+            margin-bottom: 40px;
+            line-height: 2;
+            color: rgba(200, 210, 220, 0.85);
+            font-size: 1.05rem;
+        }
+        
+        .observer-intro p {
+            margin-bottom: 1.2em;
+        }
+        
+        .observer-intro p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .narrator-section {
+            margin-bottom: 40px;
+        }
+        
+        .narrator-label {
+            font-size: 0.75rem;
+            color: rgba(100, 140, 180, 0.7);
+            letter-spacing: 0.15em;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+        
+        .narrator-content {
+            background: rgba(20, 25, 30, 0.7);
+            border-left: 3px solid rgba(100, 140, 180, 0.35);
+            padding: 24px 28px;
+            font-size: 1.1rem;
+            line-height: 2.2;
+            color: rgba(210, 220, 230, 0.88);
+            white-space: pre-wrap;
+        }
+        
+        /* 对话区域 */
+        .dialogue-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(100, 140, 180, 0.2);
+        }
+        
+        .dialogue-log {
+            margin-bottom: 30px;
+        }
+        
+        .dialogue-entry {
+            margin-bottom: 24px;
+            animation: fadeIn 0.6s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .dialogue-entry.user {
+            padding-left: 20px;
+            border-left: 2px solid rgba(180, 160, 140, 0.3);
+        }
+        
+        .dialogue-entry.observer {
+            padding-left: 20px;
+            border-left: 2px solid rgba(100, 140, 180, 0.35);
+        }
+        
+        .dialogue-speaker {
+            font-size: 0.75rem;
+            color: rgba(150, 170, 190, 0.6);
+            margin-bottom: 8px;
+            letter-spacing: 0.1em;
+        }
+        
+        .dialogue-content {
+            font-size: 1rem;
+            line-height: 1.9;
+            color: rgba(210, 220, 230, 0.85);
+            white-space: pre-wrap;
+        }
+        
+        /* 输入区域 */
+        .input-area {
+            margin-top: 30px;
+        }
+        
+        .input-prompt {
+            font-size: 0.85rem;
+            color: rgba(150, 170, 190, 0.6);
+            margin-bottom: 14px;
+        }
+        
+        .thought-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(15, 20, 25, 0.7);
+            border: 1px solid rgba(100, 140, 180, 0.25);
+            border-radius: 4px;
+            color: rgba(220, 230, 240, 0.9);
+            font-family: inherit;
+            font-size: 1rem;
+            line-height: 1.8;
+            resize: vertical;
+            min-height: 100px;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .thought-input:focus {
+            border-color: rgba(100, 140, 180, 0.5);
+            box-shadow: 0 0 20px rgba(100, 140, 180, 0.1);
+        }
+        
+        .thought-input::placeholder {
+            color: rgba(150, 170, 190, 0.4);
+        }
+        
+        .action-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 12px 24px;
+            background: rgba(100, 140, 180, 0.15);
+            border: 1px solid rgba(100, 140, 180, 0.4);
+            color: rgba(180, 200, 220, 0.9);
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        .action-btn:hover {
+            background: rgba(100, 140, 180, 0.25);
+            border-color: rgba(100, 140, 180, 0.6);
+        }
+        
+        .action-btn.secondary {
+            background: transparent;
+            border-color: rgba(100, 140, 180, 0.25);
+            color: rgba(150, 170, 190, 0.7);
+        }
+        
+        /* 引用提示 */
+        .reflection-quote {
+            background: rgba(100, 140, 180, 0.08);
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin-top: 40px;
+            font-style: italic;
+            color: rgba(150, 180, 200, 0.75);
+            text-align: center;
+            line-height: 1.8;
+        }
+        
+        /* 蓝色调背景层 */
+        .bg-layer-observer {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 30% 70%, rgba(80, 120, 160, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 30%, rgba(100, 140, 180, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(60, 80, 100, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer-observer"></div>
+    <div class="dust" id="dust"></div>
+
+    <div class="container observer-container">
+        <div class="back-link" id="backToScene">← 返回场景</div>
+        
+        <header class="observer-header">
+            <h1 class="observer-title">观察者之镜</h1>
+            <p class="observer-subtitle">当你观察别人时，你也在被观察</p>
+        </header>
+
+        <div class="observer-intro">
+            <p>你坐在咖啡馆的角落，看着窗外来来往往的人。</p>
+            <p>每个人都带着自己的故事经过——有人匆忙，有人悠闲，有人迷茫，有人笃定。</p>
+            <p>你试图理解他们，却发现你的理解总是带着你自己的滤镜。</p>
+            <p>观察者以为自己站在故事之外，却不知道——观察本身，就是一种叙事。</p>
+        </div>
+
+        <section class="narrator-section">
+            <div class="narrator-label">◇ 观察者的独白</div>
+            <div class="narrator-content" id="narratorContent"></div>
+        </section>
+
+        <section class="dialogue-section">
+            <div class="dialogue-log" id="dialogueLog">
+                <!-- 对话记录 -->
+            </div>
+
+            <div class="input-area">
+                <div class="input-prompt">你看见了什么？你在想什么？</div>
+                <textarea class="thought-input" id="thoughtInput" placeholder="描述你观察到的人，或者你内心的疑问..."></textarea>
+                <div class="action-row">
+                    <button class="action-btn" id="submitThought">继续观察</button>
+                    <button class="action-btn secondary" id="resetDialogue">重新开始</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="reflection-quote">
+            「我们看见的，永远是我们准备好看见的东西。」
+        </div>
+    </div>
+
+    <!-- 加载观察者叙事 -->
+    <script src="narratives/observer.js"></script>
+    
+    <script>
+        // 获取叙事模块
+        const narrative = window.NarrativeObserver;
+        
+        // DOM 元素
+        const narratorContent = document.getElementById('narratorContent');
+        const dialogueLog = document.getElementById('dialogueLog');
+        const thoughtInput = document.getElementById('thoughtInput');
+        const submitBtn = document.getElementById('submitThought');
+        const resetBtn = document.getElementById('resetDialogue');
+        const backBtn = document.getElementById('backToScene');
+        
+        // 对话历史
+        let dialogueHistory = [];
+        
+        /**
+         * 初始化
+         */
+        function init() {
+            // 显示开场叙述
+            if (narrative && narrative.opening) {
+                narratorContent.textContent = narrative.opening;
+            } else {
+                narratorContent.textContent = '观察者的视角正在加载...';
+            }
+            
+            // 创建尘埃粒子
+            createDust();
+            
+            // 加载历史对话
+            loadDialogueHistory();
+        }
+        
+        /**
+         * 创建尘埃粒子
+         */
+        function createDust() {
+            const container = document.getElementById('dust');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dust-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        /**
+         * 根据输入生成回应
+         */
+        function generateResponse(input) {
+            if (!narrative || !narrative.keywords || !narrative.responses) {
+                return '......';
+            }
+            
+            const lowerInput = input.toLowerCase();
+            
+            // 匹配关键词
+            for (const group of narrative.keywords) {
+                for (const word of group.words) {
+                    if (lowerInput.includes(word)) {
+                        return narrative.responses[group.key] || narrative.responses.default;
+                    }
+                }
+            }
+            
+            return narrative.responses.default || '......';
+        }
+        
+        /**
+         * 添加对话条目
+         */
+        function addDialogueEntry(speaker, content, type) {
+            const entry = document.createElement('div');
+            entry.className = `dialogue-entry ${type}`;
+            entry.innerHTML = `
+                <div class="dialogue-speaker">${speaker}</div>
+                <div class="dialogue-content">${content}</div>
+            `;
+            dialogueLog.appendChild(entry);
+            
+            // 滚动到底部
+            entry.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            
+            // 保存到历史
+            dialogueHistory.push({ speaker, content, type });
+            saveDialogueHistory();
+        }
+        
+        /**
+         * 保存对话历史
+         */
+        function saveDialogueHistory() {
+            localStorage.setItem('observerDialogue', JSON.stringify(dialogueHistory));
+        }
+        
+        /**
+         * 加载对话历史
+         */
+        function loadDialogueHistory() {
+            const saved = localStorage.getItem('observerDialogue');
+            if (saved) {
+                dialogueHistory = JSON.parse(saved);
+                dialogueHistory.forEach(item => {
+                    const entry = document.createElement('div');
+                    entry.className = `dialogue-entry ${item.type}`;
+                    entry.innerHTML = `
+                        <div class="dialogue-speaker">${item.speaker}</div>
+                        <div class="dialogue-content">${item.content}</div>
+                    `;
+                    dialogueLog.appendChild(entry);
+                });
+            }
+        }
+        
+        /**
+         * 提交思考
+         */
+        submitBtn.addEventListener('click', () => {
+            const input = thoughtInput.value.trim();
+            if (!input) return;
+            
+            // 添加用户输入
+            addDialogueEntry('你的观察', input, 'user');
+            
+            // 生成回应
+            const response = generateResponse(input);
+            
+            // 延迟显示回应
+            setTimeout(() => {
+                addDialogueEntry('观察者之镜', response, 'observer');
+            }, 800);
+            
+            // 清空输入
+            thoughtInput.value = '';
+        });
+        
+        /**
+         * 重置对话
+         */
+        resetBtn.addEventListener('click', () => {
+            if (confirm('确定要重新开始吗？当前的对话记录将被清除。')) {
+                dialogueHistory = [];
+                localStorage.removeItem('observerDialogue');
+                dialogueLog.innerHTML = '';
+            }
+        });
+        
+        /**
+         * 返回场景
+         */
+        backBtn.addEventListener('click', () => {
+            window.location.href = 'scene.html';
+        });
+        
+        /**
+         * 回车提交
+         */
+        thoughtInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                submitBtn.click();
+            }
+        });
+        
+        // 初始化
+        init();
+    </script>
+</body>
+</html>

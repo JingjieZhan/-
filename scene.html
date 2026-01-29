@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>叙事之镜 - 沉浸式体验</title>
+    <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="dust" id="dust"></div>
+
+    <div class="container">
+        <!-- 序章 / 首页 -->
+        <section class="prologue" id="prologue">
+            <div class="back-link" id="backToIndex">← 返回目录</div>
+            
+            <h1 class="title">叙事之镜</h1>
+            <p class="subtitle">每个人都活在自己的故事里</p>
+
+            <div class="scene-card">
+                <div class="scene-label">◇ 序章 · 大理古街</div>
+                <div class="scene-text">
+                    <p>我走在大理的一条古街道上。</p>
+                    <p>街道两旁，新颖的咖啡馆与古朴的店铺交错排列。我选择了一家古朴的——门口挂着手写的木牌，店内飘着某种说不清的香气。</p>
+                    <p>老板是个道士打扮的人。</p>
+                    <p>我点了一杯肉桂咖啡，坐在路边低矮的木桌旁。店门口立着一块小黑板：<span class="highlight-thought">「读书之夜」</span>。桌上摆着一本关于犬儒主义的书，书页间有红色的标注。</p>
+                    <p>我翻了几页，觉得写得乱七八糟，不像是开悟者的手笔。我把书放下。</p>
+                    <p>老板端来咖啡，问我还看不看那书。我说不看了。他便把书拿走，自己坐在柜台后读了起来。</p>
+                    <p>我看着他：<span class="highlight-thought">道士的打扮，却读着外国人写的犬儒主义，还有介绍西藏密宗的书。在景区开咖啡店，自己当老板，搞读书之夜...</span></p>
+                </div>
+            </div>
+
+            <div class="core-question">
+                他到底觉得自己是谁？<br>
+                他相信什么？他的叙事是什么？<br>
+                如果我代入他的世界模型和生活空间，<br>
+                会是怎样的体验？
+            </div>
+
+            <div class="divider">◆ ◆ ◆</div>
+
+            <p class="intro-text">
+                这世界有无数的人，有各种各样的叙事，<br>
+                有各种各样的行为策略和行为逻辑。<br>
+                <br>
+                选择一个视角，进入一段叙事——
+            </p>
+
+            <div class="portals" id="portals">
+                <!-- 由 JS 动态生成三个核心入口 -->
+            </div>
+
+            <!-- 观察者之镜入口 -->
+            <div class="observer-mirror-entry" id="observerMirrorEntry" style="
+                margin-top: 40px;
+                padding-top: 30px;
+                border-top: 1px solid rgba(100, 140, 180, 0.2);
+            ">
+                <div class="portal" style="
+                    background: rgba(25, 30, 40, 0.5);
+                    border-color: rgba(100, 140, 180, 0.25);
+                " onclick="window.location.href='observer.html'">
+                    <div class="portal-title" style="color: rgba(150, 180, 210, 0.95);">
+                        ◇ 观察者之镜
+                    </div>
+                    <div class="portal-desc" style="color: rgba(120, 150, 180, 0.7);">
+                        退后一步，成为观察者。当你观察别人时，你也在被观察。你用什么样的眼睛看世界，决定了你看见什么样的世界。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 体验界面 -->
+        <section class="experience" id="experience">
+            <div class="back-link" id="backToHome">← 返回</div>
+            
+            <div class="scene-card">
+                <span class="perspective-label" id="perspectiveLabel">当前视角</span>
+                <div class="narrator-box" id="narratorBox">
+                    叙事内容将在这里展开...
+                </div>
+            </div>
+
+            <div class="dialogue-log" id="dialogueLog">
+                <!-- 对话记录 -->
+            </div>
+
+            <div class="input-area">
+                <div class="input-prompt">你的思考、疑问，或想要探索的方向：</div>
+                <textarea class="thought-input" id="thoughtInput" placeholder="在这里写下你的想法..."></textarea>
+                <div class="action-row">
+                    <button class="action-btn" id="submitThought">继续探索</button>
+                    <button class="action-btn secondary" id="switchPerspective">切换视角</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 角色选择 Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">选择一个视角</h2>
+                <button class="modal-close" id="modalClose">×</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 角色分类列表由 JS 生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 叙事模块 - 核心 -->
+    <script src="narratives/taoist.js"></script>
+    <script src="narratives/observer.js"></script>
+    <script src="narratives/mirror.js"></script>
+    
+    <!-- 叙事模块 - 游客 -->
+    <script src="narratives/shanghai-worker.js"></script>
+    <script src="narratives/heartbroken-coder.js"></script>
+    <script src="narratives/curious-student.js"></script>
+    <script src="narratives/spiritual-seeker.js"></script>
+    
+    <!-- 叙事模块 - 本地/定居 -->
+    <script src="narratives/bai-grandmother.js"></script>
+    <script src="narratives/innkeeper.js"></script>
+    <script src="narratives/writer.js"></script>
+    <script src="narratives/digital-nomad.js"></script>
+
+    <!-- 场景数据 & 主逻辑 -->
+    <script src="scripts/scenes.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>
